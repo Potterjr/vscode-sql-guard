@@ -1,0 +1,6 @@
+# Build output of package.py
+*.vsix
+
+# OS and editor noise
+.DS_Store
+node_modules/

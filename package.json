@@ -1,0 +1,131 @@
+{
+  "name": "sql-guard",
+  "displayName": "SQL Guard",
+  "description": "Warns before running UPDATE/DELETE without WHERE, DROP or TRUNCATE via the mssql extension.",
+  "version": "0.6.0",
+  "publisher": "local",
+  "license": "UNLICENSED",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "scripts": {
+    "vscode:uninstall": "node ./uninstall.js"
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "sqlGuard.runQuery",
+        "title": "Execute Query (Safe)",
+        "category": "SQL Guard",
+        "icon": {
+          "light": "./media/safe-run-light.svg",
+          "dark": "./media/safe-run-dark.svg"
+        }
+      },
+      {
+        "command": "sqlGuard.runSection",
+        "title": "Run Section",
+        "category": "SQL Guard"
+      },
+      {
+        "command": "sqlGuard.runRegionNode",
+        "title": "Run Region",
+        "category": "SQL Guard",
+        "icon": "$(play)"
+      },
+      {
+        "command": "sqlGuard.revealSection",
+        "title": "Go to Region",
+        "category": "SQL Guard"
+      }
+    ],
+    "views": {
+      "explorer": [
+        {
+          "id": "sqlGuard.regions",
+          "name": "SQL Regions",
+          "when": "sqlGuard.hasSqlDocument"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "sqlGuard.regions",
+        "contents": "ไฟล์นี้ยังไม่มี region\nครอบ query ด้วย -- #region ชื่อ … -- #endregion\nจัดกลุ่มด้วยบรรทัด -- ==== ชื่อกลุ่ม ===="
+      }
+    ],
+    "configuration": {
+      "title": "SQL Guard",
+      "properties": {
+        "sqlGuard.hideMssqlExecute": {
+          "type": "boolean",
+          "default": true,
+          "description": "ซ่อน Execute Query เดิมของ mssql (ปุ่ม ▶, เมนูคลิกขวา, Command Palette) ให้รัน query ผ่าน SQL Guard ได้ทางเดียว"
+        },
+        "sqlGuard.autoRefreshIntelliSense": {
+          "type": "boolean",
+          "default": true,
+          "description": "Refresh IntelliSense Cache ของ mssql ให้อัตโนมัติเมื่อ connection หรือ database ของไฟล์ .sql ที่เปิดอยู่เปลี่ยน (USE, Change Database, Change Connection)"
+        }
+      }
+    },
+    "keybindings": [
+      {
+        "command": "sqlGuard.runQuery",
+        "key": "ctrl+shift+e",
+        "mac": "cmd+shift+e",
+        "when": "editorTextFocus && editorLangId == 'sql' && !notebookEditorFocused"
+      },
+      {
+        "command": "mssql.rebuildIntelliSenseCache",
+        "key": "ctrl+shift+alt+r",
+        "mac": "cmd+shift+r",
+        "when": "editorTextFocus && editorLangId == 'sql' && !notebookEditorFocused"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "sqlGuard.runQuery",
+          "when": "editorLangId == sql && !isInDiffEditor && resourcePath not in mssql.runningQueries",
+          "group": "navigation@0"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "sqlGuard.runQuery",
+          "when": "editorLangId == sql",
+          "group": "0_mssql@0"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "sqlGuard.runSection",
+          "when": "false"
+        },
+        {
+          "command": "sqlGuard.runRegionNode",
+          "when": "false"
+        },
+        {
+          "command": "sqlGuard.revealSection",
+          "when": "false"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "sqlGuard.runRegionNode",
+          "when": "view == sqlGuard.regions && viewItem == sqlRegion",
+          "group": "inline"
+        }
+      ]
+    }
+  }
+}
